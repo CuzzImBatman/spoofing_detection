@@ -1,6 +1,8 @@
 import numpy as np
 import cv2
-from sklearn.externals import joblib
+# from sklearn.externals import joblib
+import joblib
+
 import argparse
 # from time import gmtime, strftime
 
@@ -34,7 +36,7 @@ if __name__ == "__main__":
     try:
         clf = joblib.load(args["name"])
     except IOError as e:
-        print "Error loading model <"+args["name"]+">: {0}".format(e.strerror)
+        print( "Error loading model <"+args["name"]+">: {0}".format(e.strerror))
         exit(0)
 
     # # Open the camera
@@ -43,7 +45,7 @@ if __name__ == "__main__":
     else:
         cap = cv2.VideoCapture(int(args["device"]))
     if not cap.isOpened():
-        print "Error opening camera"
+        print( "Error opening camera")
         exit(0)
 
     width = 320
@@ -53,7 +55,7 @@ if __name__ == "__main__":
     # cap.set(cv2.CAP_PROP_AUTOFOCUS, 1)
 
     # # Initialize face detector
-    cascPath = "haarcascade_frontalface_default.xml"
+    cascPath = "python_scripts//haarcascade_frontalface_default.xml"
     faceCascade = cv2.CascadeClassifier(cascPath)
 
     sample_number = 1
@@ -63,7 +65,7 @@ if __name__ == "__main__":
     while True:
         ret, img_bgr = cap.read()
         if ret is False:
-            print "Error grabbing frame from camera"
+            print( "Error grabbing frame from camera")
             break
 
         img_gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
@@ -95,7 +97,7 @@ if __name__ == "__main__":
 
             point = (x, y-5)
 
-            print measures, np.mean(measures)
+            print (measures, np.mean(measures))
             if 0 not in measures:
                 text = "True"
                 if np.mean(measures) >= 0.7:
@@ -103,10 +105,13 @@ if __name__ == "__main__":
                     font = cv2.FONT_HERSHEY_SIMPLEX
                     cv2.putText(img=img_bgr, text=text, org=point, fontFace=font, fontScale=0.9, color=(0, 0, 255),
                                 thickness=2, lineType=cv2.LINE_AA)
+                    print(text)
                 else:
                     font = cv2.FONT_HERSHEY_SIMPLEX
                     cv2.putText(img=img_bgr, text=text, org=point, fontFace=font, fontScale=0.9,
                                 color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
+                    print(text)
+
 
         count+=1
         cv2.imshow('img_rgb', img_bgr)
